@@ -14,6 +14,11 @@ namespace FileHash
 
         private void _loadFileButton_Click( object sender , EventArgs e )
         {
+            getAllHashes();
+        }
+
+        private void getAllHashes()
+        {
             FileStream fileReader = File.OpenRead( _filePathTextBox.Text );
 
             try
@@ -58,6 +63,7 @@ namespace FileHash
         {
             string[] files = (string[]) e.Data.GetData( DataFormats.FileDrop );
             _filePathTextBox.Text = files[ 0 ];
+            getAllHashes();
         }
 
         private void MainForm_DragEnter( object sender , DragEventArgs e )
