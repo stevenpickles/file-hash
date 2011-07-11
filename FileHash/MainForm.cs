@@ -25,45 +25,18 @@ namespace FileHash
             {
                 fileReader = File.OpenRead( _filePathTextBox.Text );
 
-                string hashStringMD5 = getHashString( new MD5CryptoServiceProvider() , fileReader );
-                _MD5HashLabel.Text = hashStringMD5;
-
-                string hashStringRIPEMD160 = getHashString( new RIPEMD160Managed() , fileReader );
-                _RIPEMD160HashLabel.Text = hashStringRIPEMD160;
-
-                string hashStringSHA1 = getHashString( new SHA1Managed() , fileReader );
-                _SHA1HashLabel.Text = hashStringSHA1;
-
-                string hashStringSHA256 = getHashString( new SHA256Managed() , fileReader );
-                _SHA256HashLabel.Text = hashStringSHA256;
-
-                string hashStringSHA384 = getHashString( new SHA384Managed() , fileReader );
-                _SHA384HashLabel.Text = hashStringSHA384;
-
-                string hashStringSHA512 = getHashString( new SHA512Managed() , fileReader );
-                _SHA512HashLabel.Text = hashStringSHA512;
+                _MD5HashLabel.Text = getMD5HashString( fileReader );
+                _RIPEMD160HashLabel.Text = getRIPEMD160HashString( fileReader );
+                _SHA1HashLabel.Text = getSHA1HashString( fileReader );
+                _SHA256HashLabel.Text = getSHA256HashString( fileReader );
+                _SHA384HashLabel.Text = getSHA384HashString( fileReader );
+                _SHA512HashLabel.Text = getSHA512HashString( fileReader );
                 
                 fileReader.Close();
             }
-            catch( FileNotFoundException e )
+            catch( Exception e )
             {
-                string hashString = e.Message;
-                _MD5HashLabel.Text = hashString;
-                _RIPEMD160HashLabel.Text = hashString;
-                _SHA1HashLabel.Text = hashString;
-                _SHA256HashLabel.Text = hashString;
-                _SHA384HashLabel.Text = hashString;
-                _SHA512HashLabel.Text = hashString;
-            }
-            catch( UnauthorizedAccessException e )
-            {
-                string hashString = e.Message;
-                _MD5HashLabel.Text = hashString;
-                _RIPEMD160HashLabel.Text = hashString;
-                _SHA1HashLabel.Text = hashString;
-                _SHA256HashLabel.Text = hashString;
-                _SHA384HashLabel.Text = hashString;
-                _SHA512HashLabel.Text = hashString;
+                updateAllHashLabels( e.Message );
             }
             finally
             {
@@ -82,6 +55,160 @@ namespace FileHash
             hashString = hashString.Replace( "-" , "" );
             hashString = hashString.ToLower();
             return hashString;
+        }
+
+        private string getMD5HashString( FileStream fileReader )
+        {
+            if ( _MD5CheckBox.Checked )
+            {
+                return getHashString( new MD5CryptoServiceProvider() , fileReader );
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string getRIPEMD160HashString( FileStream fileReader )
+        {
+            if ( _RIPEMD160CheckBox.Checked )
+            {
+                return getHashString( new RIPEMD160Managed() , fileReader );
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string getSHA1HashString( FileStream fileReader )
+        {
+            if ( _SHA1CheckBox.Checked )
+            {
+                return getHashString( new SHA1Managed() , fileReader );
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string getSHA256HashString( FileStream fileReader )
+        {
+            if ( _SHA256CheckBox.Checked )
+            {
+                return getHashString( new SHA256Managed() , fileReader );
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string getSHA384HashString( FileStream fileReader )
+        {
+            if ( _SHA384CheckBox.Checked )
+            {
+                return getHashString( new SHA384Managed() , fileReader );
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string getSHA512HashString( FileStream fileReader )
+        {
+            if ( _SHA512CheckBox.Checked )
+            {
+                return getHashString( new SHA512Managed() , fileReader );
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private void updateAllHashLabels( string message )
+        {
+            updateMD5HashLabel( message );
+            updateRIPEMD160HashLabel( message );
+            updateSHA1HashLabel( message );
+            updateSHA256HashLabel( message );
+            updateSHA384HashLabel( message );
+            updateSHA512HashLabel( message );
+        }
+
+        private string updateMD5HashLabel( string message )
+        {
+            if ( _MD5CheckBox.Checked )
+            {
+                return message;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string updateRIPEMD160HashLabel( string message )
+        {
+            if ( _RIPEMD160CheckBox.Checked )
+            {
+                return message;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string updateSHA1HashLabel( string message )
+        {
+            if ( _SHA1CheckBox.Checked )
+            {
+                return message;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string updateSHA256HashLabel( string message )
+        {
+            if ( _SHA256CheckBox.Checked )
+            {
+                return message;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string updateSHA384HashLabel( string message )
+        {
+            if ( _SHA384CheckBox.Checked )
+            {
+                return message;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private string updateSHA512HashLabel( string message )
+        {
+            if ( _SHA512CheckBox.Checked )
+            {
+                return message;
+            }
+            else
+            {
+                return "";
+            }
         }
 
         private void MainForm_DragDrop( object sender , DragEventArgs e )
