@@ -19,10 +19,12 @@ namespace FileHash
 
         private void getAllHashes()
         {
-            FileStream fileReader = File.OpenRead( _filePathTextBox.Text );
+            FileStream fileReader = null;
 
             try
             {
+                fileReader = File.OpenRead( _filePathTextBox.Text );
+
                 string hashStringMD5 = getHashString( new MD5CryptoServiceProvider() , fileReader );
                 _MD5HashLabel.Text = hashStringMD5;
 
@@ -43,9 +45,22 @@ namespace FileHash
                 
                 fileReader.Close();
             }
+            catch( FileNotFoundException e )
+            {
+                string hashString = "file not found: " + e.FileName;
+                _MD5HashLabel.Text = hashString;
+                _RIPEMD160HashLabel.Text = hashString;
+                _SHA1HashLabel.Text = hashString;
+                _SHA256HashLabel.Text = hashString;
+                _SHA384HashLabel.Text = hashString;
+                _SHA512HashLabel.Text = hashString;
+            }
             finally
             {
-                fileReader.Close();
+                if ( fileReader != null )
+                {
+                    fileReader.Close();
+                }
             }
         }
 
