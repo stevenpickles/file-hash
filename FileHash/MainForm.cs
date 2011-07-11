@@ -47,7 +47,17 @@ namespace FileHash
             }
             catch( FileNotFoundException e )
             {
-                string hashString = "file not found: " + e.FileName;
+                string hashString = e.Message;
+                _MD5HashLabel.Text = hashString;
+                _RIPEMD160HashLabel.Text = hashString;
+                _SHA1HashLabel.Text = hashString;
+                _SHA256HashLabel.Text = hashString;
+                _SHA384HashLabel.Text = hashString;
+                _SHA512HashLabel.Text = hashString;
+            }
+            catch( UnauthorizedAccessException e )
+            {
+                string hashString = e.Message;
                 _MD5HashLabel.Text = hashString;
                 _RIPEMD160HashLabel.Text = hashString;
                 _SHA1HashLabel.Text = hashString;
