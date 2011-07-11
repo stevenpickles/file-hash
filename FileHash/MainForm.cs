@@ -236,6 +236,11 @@ namespace FileHash
             }
         }
 
+        private void HashLabel_Click( object sender , EventArgs e )
+        {
+            Clipboard.SetText( ((Label) sender).Text );
+        }
+
 
     }
 }

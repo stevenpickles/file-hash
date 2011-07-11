@@ -54,6 +54,7 @@
             this._SHA512HashLabel.Size = new System.Drawing.Size( 56 , 14 );
             this._SHA512HashLabel.TabIndex = 29;
             this._SHA512HashLabel.Text = "(blank)";
+            this._SHA512HashLabel.Click += new System.EventHandler( this.HashLabel_Click );
             // 
             // _SHA384HashLabel
             // 
@@ -64,6 +65,7 @@
             this._SHA384HashLabel.Size = new System.Drawing.Size( 56 , 14 );
             this._SHA384HashLabel.TabIndex = 27;
             this._SHA384HashLabel.Text = "(blank)";
+            this._SHA384HashLabel.Click += new System.EventHandler( this.HashLabel_Click );
             // 
             // _SHA256HashLabel
             // 
@@ -74,6 +76,7 @@
             this._SHA256HashLabel.Size = new System.Drawing.Size( 56 , 14 );
             this._SHA256HashLabel.TabIndex = 25;
             this._SHA256HashLabel.Text = "(blank)";
+            this._SHA256HashLabel.Click += new System.EventHandler( this.HashLabel_Click );
             // 
             // _SHA1HashLabel
             // 
@@ -84,6 +87,7 @@
             this._SHA1HashLabel.Size = new System.Drawing.Size( 56 , 14 );
             this._SHA1HashLabel.TabIndex = 23;
             this._SHA1HashLabel.Text = "(blank)";
+            this._SHA1HashLabel.Click += new System.EventHandler( this.HashLabel_Click );
             // 
             // _RIPEMD160HashLabel
             // 
@@ -94,6 +98,7 @@
             this._RIPEMD160HashLabel.Size = new System.Drawing.Size( 56 , 14 );
             this._RIPEMD160HashLabel.TabIndex = 21;
             this._RIPEMD160HashLabel.Text = "(blank)";
+            this._RIPEMD160HashLabel.Click += new System.EventHandler( this.HashLabel_Click );
             // 
             // _MD5HashLabel
             // 
@@ -104,6 +109,7 @@
             this._MD5HashLabel.Size = new System.Drawing.Size( 56 , 14 );
             this._MD5HashLabel.TabIndex = 19;
             this._MD5HashLabel.Text = "(blank)";
+            this._MD5HashLabel.Click += new System.EventHandler( this.HashLabel_Click );
             // 
             // _loadFileButton
             // 
