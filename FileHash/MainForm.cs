@@ -2,14 +2,29 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
 
 namespace FileHash
 {
     public partial class MainForm : Form
     {
+        private const int _NUMBER_OF_HASH_ALGORITHMS_C = 6;
+        private ManualResetEvent[] _doneEvents;
+        private FileHash[] _fileHashes;
+
         public MainForm()
         {
             InitializeComponent();
+
+            _doneEvents = new ManualResetEvent[ _NUMBER_OF_HASH_ALGORITHMS_C ];
+            _fileHashes = new FileHash[ _NUMBER_OF_HASH_ALGORITHMS_C ];
+
+            _fileHashes[ 0 ] = new FileHash( new MD5CryptoServiceProvider() );
+            _fileHashes[ 1 ] = new FileHash( new RIPEMD160Managed() );
+            _fileHashes[ 2 ] = new FileHash( new SHA1Managed() );
+            _fileHashes[ 3 ] = new FileHash( new SHA256Managed() );
+            _fileHashes[ 4 ] = new FileHash( new SHA384Managed() );
+            _fileHashes[ 5 ] = new FileHash( new SHA512Managed() );
         }
 
         private void _loadFileButton_Click( object sender , EventArgs e )
@@ -28,13 +43,25 @@ namespace FileHash
                 fileContents = new byte[ fileReader.Length ];
                 fileReader.Read( fileContents , 0 , (int) fileReader.Length );
 
-                _MD5HashLabel.Text = getMD5HashString( fileContents );
-                _RIPEMD160HashLabel.Text = getRIPEMD160HashString( fileContents );
-                _SHA1HashLabel.Text = getSHA1HashString( fileContents );
-                _SHA256HashLabel.Text = getSHA256HashString( fileContents );
-                _SHA384HashLabel.Text = getSHA384HashString( fileContents );
-                _SHA512HashLabel.Text = getSHA512HashString( fileContents );
-                
+                for ( int index = 0 ; index < _NUMBER_OF_HASH_ALGORITHMS_C ; index++ )
+                {
+                    _doneEvents[ index ] = new ManualResetEvent( false );
+                    _fileHashes[ index ].DoneEvent = _doneEvents[ index ];
+                    ThreadPool.QueueUserWorkItem( _fileHashes[ index ].GetHashString , fileContents );
+                }
+
+                foreach ( var e in _doneEvents )
+                {
+                    e.WaitOne();
+                }
+
+                _MD5HashLabel.Text = _fileHashes[ 0 ].HashString;
+                _RIPEMD160HashLabel.Text = _fileHashes[ 1 ].HashString;
+                _SHA1HashLabel.Text = _fileHashes[ 2 ].HashString;
+                _SHA256HashLabel.Text = _fileHashes[ 3 ].HashString;
+                _SHA384HashLabel.Text = _fileHashes[ 4 ].HashString;
+                _SHA512HashLabel.Text = _fileHashes[ 5 ].HashString;
+
                 fileReader.Close();
             }
             catch( Exception e )
@@ -47,87 +74,6 @@ namespace FileHash
                 {
                     fileReader.Close();
                 }
-            }
-        }
-
-        private string getHashString( HashAlgorithm hash , byte[] fileContents )
-        {
-            byte[] hashBytes = hash.ComputeHash( fileContents );
-            string hashString = BitConverter.ToString( hashBytes );
-            hashString = hashString.Replace( "-" , "" );
-            hashString = hashString.ToLower();
-            return hashString;
-        }
-
-        private string getMD5HashString( byte[] fileContents )
-        {
-            if ( _MD5CheckBox.Checked )
-            {
-                return getHashString( new MD5CryptoServiceProvider() , fileContents );
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        private string getRIPEMD160HashString( byte[] fileContents )
-        {
-            if ( _RIPEMD160CheckBox.Checked )
-            {
-                return getHashString( new RIPEMD160Managed() , fileContents );
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        private string getSHA1HashString( byte[] fileContents )
-        {
-            if ( _SHA1CheckBox.Checked )
-            {
-                return getHashString( new SHA1Managed() , fileContents );
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        private string getSHA256HashString( byte[] fileContents )
-        {
-            if ( _SHA256CheckBox.Checked )
-            {
-                return getHashString( new SHA256Managed() , fileContents );
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        private string getSHA384HashString( byte[] fileContents )
-        {
-            if ( _SHA384CheckBox.Checked )
-            {
-                return getHashString( new SHA384Managed() , fileContents );
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        private string getSHA512HashString( byte[] fileContents )
-        {
-            if ( _SHA512CheckBox.Checked )
-            {
-                return getHashString( new SHA512Managed() , fileContents );
-            }
-            else
-            {
-                return "";
             }
         }
 
@@ -239,6 +185,36 @@ namespace FileHash
         private void HashLabel_Click( object sender , EventArgs e )
         {
             Clipboard.SetText( ((Label) sender).Text );
+        }
+
+        private void _MD5CheckBox_CheckedChanged( object sender , EventArgs e )
+        {
+            _fileHashes[ 0 ].Enabled = ((CheckBox) sender).Checked;
+        }
+
+        private void _RIPEMD160CheckBox_CheckedChanged( object sender , EventArgs e )
+        {
+            _fileHashes[ 1 ].Enabled = ((CheckBox) sender).Checked;
+        }
+
+        private void _SHA1CheckBox_CheckedChanged( object sender , EventArgs e )
+        {
+            _fileHashes[ 2 ].Enabled = ((CheckBox) sender).Checked;
+        }
+
+        private void _SHA256CheckBox_CheckedChanged( object sender , EventArgs e )
+        {
+            _fileHashes[ 3 ].Enabled = ((CheckBox) sender).Checked;
+        }
+
+        private void _SHA384CheckBox_CheckedChanged( object sender , EventArgs e )
+        {
+            _fileHashes[ 4 ].Enabled = ((CheckBox) sender).Checked;
+        }
+
+        private void _SHA512CheckBox_CheckedChanged( object sender , EventArgs e )
+        {
+            _fileHashes[ 5 ].Enabled = ((CheckBox) sender).Checked;
         }
 
 

@@ -148,6 +148,7 @@
             this._MD5CheckBox.TabIndex = 30;
             this._MD5CheckBox.Text = "MD5:";
             this._MD5CheckBox.UseVisualStyleBackColor = true;
+            this._MD5CheckBox.CheckedChanged += new System.EventHandler( this._MD5CheckBox_CheckedChanged );
             // 
             // _RIPEMD160CheckBox
             // 
@@ -160,6 +161,7 @@
             this._RIPEMD160CheckBox.TabIndex = 31;
             this._RIPEMD160CheckBox.Text = "RIPEMD160:";
             this._RIPEMD160CheckBox.UseVisualStyleBackColor = true;
+            this._RIPEMD160CheckBox.CheckedChanged += new System.EventHandler( this._RIPEMD160CheckBox_CheckedChanged );
             // 
             // _SHA1CheckBox
             // 
@@ -172,6 +174,7 @@
             this._SHA1CheckBox.TabIndex = 32;
             this._SHA1CheckBox.Text = "SHA1:";
             this._SHA1CheckBox.UseVisualStyleBackColor = true;
+            this._SHA1CheckBox.CheckedChanged += new System.EventHandler( this._SHA1CheckBox_CheckedChanged );
             // 
             // _SHA256CheckBox
             // 
@@ -184,6 +187,7 @@
             this._SHA256CheckBox.TabIndex = 33;
             this._SHA256CheckBox.Text = "SHA256:";
             this._SHA256CheckBox.UseVisualStyleBackColor = true;
+            this._SHA256CheckBox.CheckedChanged += new System.EventHandler( this._SHA256CheckBox_CheckedChanged );
             // 
             // _SHA384CheckBox
             // 
@@ -196,6 +200,7 @@
             this._SHA384CheckBox.TabIndex = 34;
             this._SHA384CheckBox.Text = "SHA384:";
             this._SHA384CheckBox.UseVisualStyleBackColor = true;
+            this._SHA384CheckBox.CheckedChanged += new System.EventHandler( this._SHA384CheckBox_CheckedChanged );
             // 
             // _SHA512CheckBox
             // 
@@ -208,6 +213,7 @@
             this._SHA512CheckBox.TabIndex = 35;
             this._SHA512CheckBox.Text = "SHA512:";
             this._SHA512CheckBox.UseVisualStyleBackColor = true;
+            this._SHA512CheckBox.CheckedChanged += new System.EventHandler( this._SHA512CheckBox_CheckedChanged );
             // 
             // MainForm
             // 
@@ -231,7 +237,7 @@
             this.Controls.Add( this._filePathTextBox );
             this.Controls.Add( this._filenameLabel );
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Hash Generator/Checker";
             this.DragDrop += new System.Windows.Forms.DragEventHandler( this.MainForm_DragDrop );
             this.DragEnter += new System.Windows.Forms.DragEventHandler( this.MainForm_DragEnter );
             this.ResumeLayout( false );
