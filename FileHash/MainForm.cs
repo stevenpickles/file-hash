@@ -15,6 +15,10 @@ namespace FileHash
         private FileHash _SHA384Hasher;
         private FileHash _SHA512Hasher;
 
+        private bool _busy;
+        private int _threadsRemaining;
+        private object _threadsRemainingLock;
+
         public MainForm()
         {
             InitializeComponent();
@@ -25,6 +29,10 @@ namespace FileHash
             _SHA256Hasher = new FileHash( new SHA256Managed() );
             _SHA384Hasher = new FileHash( new SHA384Managed() );
             _SHA512Hasher = new FileHash( new SHA512Managed() );
+
+            _busy = false;
+            _threadsRemaining = 0;
+            _threadsRemainingLock = new object();
 
             ThreadPool.SetMaxThreads( 30 , 30 );
             ThreadPool.SetMinThreads( 10 , 10 );
@@ -47,6 +55,10 @@ namespace FileHash
                 fileReader.Read( fileContents , 0 , (int) fileReader.Length );
 
                 updateAllHashLabels( "" );
+
+                _busy = true;
+                _threadsRemaining = 6;
+                _loadFileButton.Enabled = false;
 
                 ThreadPool.QueueUserWorkItem( new WaitCallback( GetMD5Hash ) , fileContents );
                 ThreadPool.QueueUserWorkItem( new WaitCallback( GetRIPEMD160Hash ) , fileContents );
@@ -111,6 +123,27 @@ namespace FileHash
 
             action = () => label.Text = hasher.HashString;
             this.BeginInvoke( action );
+
+            DecrementThreadsRemaining();
+        }
+
+        private void DecrementThreadsRemaining()
+        {
+            lock ( _threadsRemainingLock )
+            {
+                _threadsRemaining--;
+
+                if ( _threadsRemaining == 0 )
+                {
+                    Action action;
+
+                    action = () => _busy = false;
+                    this.BeginInvoke( action );
+
+                    action = () => _loadFileButton.Enabled = true;
+                    this.BeginInvoke( action );
+                }
+            }
         }
 
         private void updateAllHashLabels( string message )
@@ -197,9 +230,12 @@ namespace FileHash
 
         private void MainForm_DragDrop( object sender , DragEventArgs e )
         {
-            string[] files = (string[]) e.Data.GetData( DataFormats.FileDrop );
-            _filePathTextBox.Text = files[ 0 ];
-            getAllHashes();
+            if ( !_busy )
+            {
+                string[] files = (string[]) e.Data.GetData( DataFormats.FileDrop );
+                _filePathTextBox.Text = files[ 0 ];
+                getAllHashes();
+            }
         }
 
         private void MainForm_DragEnter( object sender , DragEventArgs e )
