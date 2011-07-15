@@ -25,10 +25,8 @@ namespace FileHash
             _doneEvent = new ManualResetEvent( false );
         }
 
-        public void GetHashString( object threadContext )
+        public void GetHashString( byte[] bytes )
         {
-            byte[] bytes = (byte[]) threadContext;
-
             if ( _enabled )
             {
                 byte[] hashBytes = _hashAlgorithm.ComputeHash( bytes );
