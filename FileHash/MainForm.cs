@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Diagnostics;
 
 namespace FileHash
 {
@@ -136,6 +137,9 @@ namespace FileHash
                 if ( _threadsRemaining == 0 )
                 {
                     Action action;
+
+                    action = () => _calculationTimeLabel.Text = "calculation time = " + ( _MD5Hasher.ElapsedMilliseconds + _RIPEMD160Hasher.ElapsedMilliseconds + _SHA1Hasher.ElapsedMilliseconds + _SHA256Hasher.ElapsedMilliseconds + _SHA384Hasher.ElapsedMilliseconds + _SHA512Hasher.ElapsedMilliseconds ).ToString() + " ms";
+                    this.BeginInvoke( action );
 
                     action = () => _busy = false;
                     this.BeginInvoke( action );

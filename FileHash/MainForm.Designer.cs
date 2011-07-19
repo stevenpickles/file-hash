@@ -43,6 +43,7 @@
             this._SHA256CheckBox = new System.Windows.Forms.CheckBox();
             this._SHA384CheckBox = new System.Windows.Forms.CheckBox();
             this._SHA512CheckBox = new System.Windows.Forms.CheckBox();
+            this._calculationTimeLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // _SHA512HashLabel
@@ -215,12 +216,23 @@
             this._SHA512CheckBox.UseVisualStyleBackColor = true;
             this._SHA512CheckBox.CheckedChanged += new System.EventHandler( this._SHA512CheckBox_CheckedChanged );
             // 
+            // _calculationTimeLabel
+            // 
+            this._calculationTimeLabel.AutoSize = true;
+            this._calculationTimeLabel.Font = new System.Drawing.Font( "Courier New" , 8.25F , System.Drawing.FontStyle.Regular , System.Drawing.GraphicsUnit.Point , ( ( byte ) ( 0 ) ) );
+            this._calculationTimeLabel.Location = new System.Drawing.Point( 102 , 133 );
+            this._calculationTimeLabel.Name = "_calculationTimeLabel";
+            this._calculationTimeLabel.Size = new System.Drawing.Size( 168 , 14 );
+            this._calculationTimeLabel.TabIndex = 36;
+            this._calculationTimeLabel.Text = "calculation time = ? ms";
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F , 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size( 1092 , 143 );
+            this.ClientSize = new System.Drawing.Size( 1092 , 156 );
+            this.Controls.Add( this._calculationTimeLabel );
             this.Controls.Add( this._SHA512CheckBox );
             this.Controls.Add( this._SHA384CheckBox );
             this.Controls.Add( this._SHA256CheckBox );
@@ -262,6 +274,7 @@
         private System.Windows.Forms.CheckBox _SHA256CheckBox;
         private System.Windows.Forms.CheckBox _SHA384CheckBox;
         private System.Windows.Forms.CheckBox _SHA512CheckBox;
+        private System.Windows.Forms.Label _calculationTimeLabel;
     }
 }
 
