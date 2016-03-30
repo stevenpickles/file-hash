@@ -46,81 +46,60 @@ namespace FileHash
 
         private void getAllHashes()
         {
-            FileStream fileReader = null;
-            byte[] fileContents = null;
+            FileInfo fileInfo = new FileInfo( _filePathTextBox.Text );
 
-            try
-            {
-                fileReader = File.OpenRead( _filePathTextBox.Text );
-                fileContents = new byte[ fileReader.Length ];
-                fileReader.Read( fileContents , 0 , (int) fileReader.Length );
+            updateAllHashLabels( "" );
 
-                updateAllHashLabels( "" );
+            _busy = true;
+            _threadsRemaining = 6;
+            _loadFileButton.Enabled = false;
 
-                _busy = true;
-                _threadsRemaining = 6;
-                _loadFileButton.Enabled = false;
-
-                ThreadPool.QueueUserWorkItem( new WaitCallback( GetMD5Hash ) , fileContents );
-                ThreadPool.QueueUserWorkItem( new WaitCallback( GetRIPEMD160Hash ) , fileContents );
-                ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA1Hash ) , fileContents );
-                ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA256Hash ) , fileContents );
-                ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA384Hash ) , fileContents );
-                ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA512Hash ) , fileContents );
-
-                fileReader.Close();
-            }
-            catch( Exception e )
-            {
-                updateAllHashLabels( e.Message );
-            }
-            finally
-            {
-                if ( fileReader != null )
-                {
-                    fileReader.Close();
-                }
-            }
+            ThreadPool.QueueUserWorkItem( new WaitCallback( GetMD5Hash ) , fileInfo );
+            ThreadPool.QueueUserWorkItem( new WaitCallback( GetRIPEMD160Hash ) , fileInfo );
+            ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA1Hash ) , fileInfo );
+            ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA256Hash ) , fileInfo );
+            ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA384Hash ) , fileInfo );
+            ThreadPool.QueueUserWorkItem( new WaitCallback( GetSHA512Hash ) , fileInfo );
         }
 
-        private void GetMD5Hash( object fileContents )
+        private void GetMD5Hash( object fileInfo )
         {
-            GetHash( _MD5Hasher , _MD5HashLabel , (byte[]) fileContents );
-        }
-        
-        private void GetRIPEMD160Hash( object fileContents )
-        {
-            GetHash( _RIPEMD160Hasher , _RIPEMD160HashLabel , (byte[]) fileContents );
-        }
-        
-        private void GetSHA1Hash( object fileContents )
-        {
-            GetHash( _SHA1Hasher , _SHA1HashLabel , (byte[]) fileContents );
+            GetHash( _MD5Hasher , _MD5HashLabel , (FileInfo) fileInfo );
         }
 
-        private void GetSHA256Hash( object fileContents )
+        private void GetRIPEMD160Hash( object fileInfo )
         {
-            GetHash( _SHA256Hasher , _SHA256HashLabel , (byte[]) fileContents );
+            GetHash( _RIPEMD160Hasher , _RIPEMD160HashLabel , (FileInfo) fileInfo );
         }
 
-        private void GetSHA384Hash( object fileContents )
+        private void GetSHA1Hash( object fileInfo )
         {
-            GetHash( _SHA384Hasher , _SHA384HashLabel , (byte[]) fileContents );
+            GetHash( _SHA1Hasher , _SHA1HashLabel , (FileInfo) fileInfo );
         }
 
-        private void GetSHA512Hash( object fileContents )
+        private void GetSHA256Hash( object fileInfo )
         {
-            GetHash( _SHA512Hasher , _SHA512HashLabel , (byte[]) fileContents );
+            GetHash( _SHA256Hasher , _SHA256HashLabel , (FileInfo) fileInfo );
         }
 
-        private void GetHash( FileHash hasher , Label label , byte[] fileContents )
+        private void GetSHA384Hash( object fileInfo )
+        {
+            GetHash( _SHA384Hasher , _SHA384HashLabel , (FileInfo) fileInfo );
+        }
+
+        private void GetSHA512Hash( object fileInfo )
+        {
+            GetHash( _SHA512Hasher , _SHA512HashLabel , (FileInfo) fileInfo );
+        }
+
+        private void GetHash( FileHash hasher , Label label , FileInfo fileInfo )
         {
             Action action;
 
             action = () => label.Text = "... computing ...";
             this.BeginInvoke( action );
-            
-            hasher.GetHashString( fileContents );
+
+            hasher.GetHashString( fileInfo );
 
             action = () => label.Text = hasher.HashString;
             this.BeginInvoke( action );
@@ -138,7 +117,7 @@ namespace FileHash
                 {
                     Action action;
 
-                    action = () => _calculationTimeLabel.Text = "calculation time = " + ( _MD5Hasher.ElapsedMilliseconds + _RIPEMD160Hasher.ElapsedMilliseconds + _SHA1Hasher.ElapsedMilliseconds + _SHA256Hasher.ElapsedMilliseconds + _SHA384Hasher.ElapsedMilliseconds + _SHA512Hasher.ElapsedMilliseconds ).ToString() + " ms";
+                    action = () => _calculationTimeLabel.Text = "calculation time = " + ( _MD5Hasher.ElapsedMilliseconds + _RIPEMD160Hasher.ElapsedMilliseconds + _SHA1Hasher.ElapsedMilliseconds + _SHA256Hasher.ElapsedMilliseconds + _SHA384Hasher.ElapsedMilliseconds + _SHA512Hasher.ElapsedMilliseconds ).ToString() + " ms (computer time; not real time)";
                     this.BeginInvoke( action );
 
                     action = () => _busy = false;
@@ -260,37 +239,37 @@ namespace FileHash
 
         private void HashLabel_Click( object sender , EventArgs e )
         {
-            Clipboard.SetText( ((Label) sender).Text );
+            Clipboard.SetText( ( (Label) sender ).Text );
         }
 
         private void _MD5CheckBox_CheckedChanged( object sender , EventArgs e )
         {
-            _MD5Hasher.Enabled = ((CheckBox) sender).Checked;
+            _MD5Hasher.Enabled = ( (CheckBox) sender ).Checked;
         }
 
         private void _RIPEMD160CheckBox_CheckedChanged( object sender , EventArgs e )
         {
-            _RIPEMD160Hasher.Enabled = ((CheckBox) sender).Checked;
+            _RIPEMD160Hasher.Enabled = ( (CheckBox) sender ).Checked;
         }
 
         private void _SHA1CheckBox_CheckedChanged( object sender , EventArgs e )
         {
-            _SHA1Hasher.Enabled = ((CheckBox) sender).Checked;
+            _SHA1Hasher.Enabled = ( (CheckBox) sender ).Checked;
         }
 
         private void _SHA256CheckBox_CheckedChanged( object sender , EventArgs e )
         {
-            _SHA256Hasher.Enabled = ((CheckBox) sender).Checked;
+            _SHA256Hasher.Enabled = ( (CheckBox) sender ).Checked;
         }
 
         private void _SHA384CheckBox_CheckedChanged( object sender , EventArgs e )
         {
-            _SHA384Hasher.Enabled = ((CheckBox) sender).Checked;
+            _SHA384Hasher.Enabled = ( (CheckBox) sender ).Checked;
         }
 
         private void _SHA512CheckBox_CheckedChanged( object sender , EventArgs e )
         {
-            _SHA512Hasher.Enabled = ((CheckBox) sender).Checked;
+            _SHA512Hasher.Enabled = ( (CheckBox) sender ).Checked;
         }
 
 

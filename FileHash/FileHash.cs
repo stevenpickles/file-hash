@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
-using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 namespace FileHash
 {
@@ -26,16 +26,28 @@ namespace FileHash
             _stopwatch = new Stopwatch();
         }
 
-        public void GetHashString( byte[] bytes )
+        public void GetHashString( FileInfo fileInfo )
         {
             if ( _enabled )
             {
                 _stopwatch.Reset();
                 _stopwatch.Start();
-                byte[] hashBytes = _hashAlgorithm.ComputeHash( bytes );
-                _hashString = BitConverter.ToString( hashBytes );
-                _hashString = _hashString.Replace( "-" , "" );
-                _hashString = _hashString.ToLower();
+
+                try
+                {
+                    using ( FileStream fileStream = fileInfo.OpenRead() )
+                    {
+                        byte[] hashBytes = _hashAlgorithm.ComputeHash( fileStream );
+                        _hashString = BitConverter.ToString( hashBytes );
+                        _hashString = _hashString.Replace( "-" , "" );
+                        _hashString = _hashString.ToLower();
+                    }
+                }
+                catch ( Exception e )
+                {
+                    _hashString = e.Message;
+                }
+
                 _stopwatch.Stop();
             }
             else
